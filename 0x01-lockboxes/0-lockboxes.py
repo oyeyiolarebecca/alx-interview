@@ -1,14 +1,35 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
+"""Defines a function that determines if a box containing a list
+   of lists can be opened using keys stored in the lists
+"""
+
+
+from collections import deque
+
+
 def canUnlockAll(boxes):
+    """
+    Determines if all boxes can be opened
+    """
     n = len(boxes)
-    unlocked = set([0])  # Start with the first box unlocked
-    keys = set(boxes[0])  # Initially, we have keys from the first box
-    
-    while keys:
-        new_key = keys.pop()  # Take a key from the set
-        if new_key < n and new_key not in unlocked:
-            unlocked.add(new_key)  # Unlock the corresponding box
-            keys.update(boxes[new_key])  # Add keys from the newly unlocked box
-    
-    # If the number of unlocked boxes equals the total number of boxes, return True
-    return len(unlocked) == n
+    if n == 0:
+        return True
+
+    # Set to keep track of visited boxes
+    visited = set()
+    visited.add(0)  # Start with the first box unlocked
+
+    # Queue for BFS
+    queue = deque([0])
+
+    while queue:
+        current_box = queue.popleft()
+
+        # Check keys in the current box
+        for key in boxes[current_box]:
+            if key < n and key not in visited:
+                visited.add(key)
+                queue.append(key)
+
+    # If all boxes are visited, return True
+    return len(visited) == n
